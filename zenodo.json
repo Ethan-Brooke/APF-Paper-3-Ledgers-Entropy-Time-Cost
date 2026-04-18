@@ -1,0 +1,33 @@
+{
+  "title": "APF Paper 3 — Ledgers: Admissible Dynamics, Entropy, and the Arrow of Time",
+  "description": "<p>Three results from the foundation of Paper 1, all following from PLEC's four structurally necessary components: complete positivity as a theorem (T_CPTP); entropy as committed capacity (T_entropy + T_kappa with kappa=2 derived); the arrow of time from irreversibility (L_irr + T_second_law). Extends to Geometric Carrying Capacity (ACC), horizon entropy S = A/4, three-entropies unification, and staged cosmogenesis. Now includes a dedicated 'Relation to prior work' section positioning each major claim against its mainstream comparator (Stinespring/Choi/GKSL, Lieb-Ruskai/Spohn, Bekenstein-Hawking-Gibbons-Hawking, Petz/Beny-Osborne, Jarlskog/T2K).</p><p>This repository is the executable mathematical appendix for Paper 3 of the Admissibility Physics Framework (APF). All theorems trace to named check functions in the bundled <code>apf/</code> package.</p>",
+  "creators": [
+    {
+      "name": "Brooke, Ethan",
+      "affiliation": "Independent Researcher, San Anselmo, California, USA",
+      "orcid": "0009-0001-2261-4682"
+    }
+  ],
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "keywords": ["entropy", "arrow of time", "CPTP maps", "horizon entropy", "Bekenstein-Hawking", "cosmogenesis", "Fisher information", "ledger accounting", "admissibility carrying capacity"],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/Ethan-Brooke/APF-Paper-3-Ledgers-Entropy-Time-Cost",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.18604844",
+      "relation": "isVersionOf",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.18604548",
+      "relation": "references",
+      "scheme": "doi"
+    }
+  ],
+  "version": "3.2"
+}

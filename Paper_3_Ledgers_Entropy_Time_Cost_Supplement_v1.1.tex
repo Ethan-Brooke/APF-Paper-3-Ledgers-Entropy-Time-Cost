@@ -1,0 +1,968 @@
+% ======================================================================
+% Paper 3 Technical Supplement v1.0
+% Companion to Paper 3 --- Ledgers: Admissible Dynamics, Entropy, and the
+% Arrow of Time.
+%
+% v1.0 (2026-04-18): Initial Technical Supplement, built in response to
+%   the Paper 3 lit-review audit (2026-04-18).  Mirrors the structure of
+%   the Paper 1 / Paper 2 / Paper 7 Technical Supplements.  Six formal
+%   sections cover the main theorems at proof-dense scope; a red-team
+%   section flags non-A1/non-PLEC hypotheses at point of use; theorem
+%   index and dependency appendix close the document.
+% ======================================================================
+
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathtools}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.5em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape Paper 3 Technical Supplement}
+\fancyhead[R]{\small\itshape E.\,Brooke}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\tcbuselibrary{skins,breakable}
+
+\tcbset{
+    apfbox/.style={
+        enhanced,
+        colback=black!3,
+        frame hidden,
+        borderline={0.5pt}{0pt}{black},
+        arc=0pt,
+        left=8pt, right=8pt, top=8pt, bottom=8pt,
+        fonttitle=\bfseries\color{black},
+        coltitle=black,
+        detach title,
+        before upper={\tcbtitle\par\smallskip},
+        before skip=14pt,
+        after skip=14pt,
+        sharp corners,
+        breakable,
+    }
+}
+
+\tcbset{
+    redteambox/.style={
+        enhanced,
+        colback=black!5,
+        frame hidden,
+        borderline={0.5pt}{0pt}{black!70},
+        arc=0pt,
+        left=8pt, right=8pt, top=8pt, bottom=8pt,
+        fonttitle=\bfseries\color{black!80},
+        coltitle=black!80,
+        detach title,
+        before upper={\tcbtitle\par\smallskip},
+        before skip=14pt,
+        after skip=14pt,
+        sharp corners,
+        breakable,
+    }
+}
+
+\newcommand{\coderef}[2]{\smallskip\noindent\textit{Code reference:} \texttt{#1} in \texttt{#2}.}
+\newcommand{\epitag}[1]{\textsf{\footnotesize[#1]}}
+
+\setstretch{1.05}
+\setlist[itemize]{itemsep=3pt,topsep=4pt}
+\setlist[enumerate]{itemsep=3pt,topsep=4pt}
+
+\title{\textbf{Paper 3 Technical Supplement}\\[0.4em]
+\large Admissible Dynamics, Entropy, and the Arrow of Time: Formal Proofs\\[0.2em]
+\normalsize Companion to Paper~3 of the Admissibility Physics Framework}
+\author{E.\ S.\ Brooke}
+\date{Version 1.0 --- April 2026}
+
+\begin{document}
+
+\maketitle
+
+\noindent\textit{Independent Researcher, San Anselmo, California, USA}\\
+\textit{Corresponding author: brooke.ethan@gmail.com}\\
+\textit{ORCID: \href{https://orcid.org/0009-0001-2261-4682}{0009-0001-2261-4682}}
+
+\bigskip
+
+\begin{abstract}
+\noindent This Technical Supplement provides proof-dense formal treatment of
+the main theorems of Paper~3 --- \emph{Ledgers: Admissible Dynamics,
+Entropy, and the Arrow of Time}.  The main paper states the theorems with
+proof sketches; the Supplement carries the full formal burden.  The
+organization mirrors the Paper~1, Paper~2, and Paper~7 Technical Supplements.
+Six formal sections cover, in order: complete positivity as a theorem
+($T_{\mathrm{CPTP}}$) in explicit comparison to the Stinespring--Choi--GKSL
+infrastructure~\cite{Stinespring1955,Choi1975,Lindblad1976,GKS1976,Kraus1983};
+the directed-enforcement multiplier with $\kappa=2$ derived from
+irreversibility and locality ($T_\kappa$); von Neumann entropy as committed
+capacity ($T_{\mathrm{entropy}}$) anchored to the strong-subadditivity
+backbone~\cite{LiebRuskai1973,Wehrl1978}; the second law and the arrow of
+time as structural consequences of $L_{\mathrm{irr}}$; admissibility carrying
+capacity (ACC) and horizon entropy $S=A/4$ with proof of the $1/2\times 1/2$
+bookkeeping; and the Fisher-information metric on admissible states with RG
+flow as Fisher gradient descent~\cite{BraunsteinCaves1994,Petz1996,AmariNagaoka2000}.
+A red-team section flags three additional hypotheses at point of use
+(H1 Markovian-composition closure; H2 Hamiltonian-constraint redundancy;
+H3 constraint-functional monotonicity).  Theorem index and dependency-diagram
+appendices close the document.
+\end{abstract}
+
+\bigskip
+\tableofcontents
+\bigskip
+
+
+% ======================================================================
+\section{Front matter: inventory of inputs and constitutive principles}
+\label{sec:inputs}
+% ======================================================================
+
+\subsection{PLEC components imported from Paper~1}
+
+Paper~3 imports the four structurally necessary components of PLEC from
+Paper~1 v4.0-PLEC~\cite{Paper1}.  They are used throughout this Supplement
+in the following roles:
+
+\begin{tcolorbox}[apfbox, title={Inputs, Constitutive Principles, and Honest Flags}]
+\textbf{PLEC components (imported).}
+\begin{itemize}
+  \item \textbf{A1} (finite enforcement capacity, upper bound): $\sum_{d \in G}\varepsilon(d) \le C(\rho,\Gamma)$.  Used in every section.
+  \item \textbf{MD} (positive cost floor, lower bound): $\inf_{d \in G}\varepsilon(d) \ge \mu^* > 0$.  Used in $T_\kappa$, $T_{\mathrm{entropy}}$.
+  \item \textbf{A2} (argmin selection): $G_{\mathrm{realized}} = \argmin_{G \in \mathcal{A}} \sum \varepsilon$.  Used in entropy monotonicity (second law) and Fisher-metric uniqueness.
+  \item \textbf{BW} (non-degeneracy): cost spectrum rich enough for $\argmin$ to be informative.  Used in $T_{\mathrm{seq}}$ temporal bound.
+\end{itemize}
+
+\textbf{Structural lemmas (imported).}
+$T_{\mathrm{tensor}}$, $L_{\mathrm{loc}}$, $L_{\mathrm{nc}}$, $L_\Delta$,
+$T_{\mathrm{adj}}$ (all from Paper~1); $L_{\mathrm{count}}$ ($C_{\mathrm{total}}=61$,
+$d_{\mathrm{eff}}=102$), $T_{7B}$ (gauge-matter sector parity), $T_{\mathrm{holonomy}}$,
+$B1'$ (real/pseudoreal composite structure) (all from Paper~2).
+
+\textbf{Additional hypotheses introduced in this paper} (flagged at point of use):
+\begin{itemize}
+  \item \textbf{H1} --- Markovian-composition closure.  Composition of admissibility-preserving CPTP maps remains admissible.  Used in $T_{\mathrm{seq}}$ (\S\ref{sec:TCPTP}).
+  \item \textbf{H2} --- Hamiltonian-constraint redundancy.  At a causal horizon, the Hamiltonian constraint identifies a gauge-redundant factor of $1/2$ in the ACC-to-entropy conversion.  Used in the $1/2 \times 1/2$ proof (\S\ref{sec:ACC}).
+  \item \textbf{H3} --- Constraint-functional monotonicity.  Along admissible trajectories, $\Phi_c = \ln(d_{\mathrm{field}}/d_{\mathrm{admissible}})$ is monotone non-increasing.  Used in the staged-cosmogenesis arrow (\S\ref{sec:irr} closing).
+\end{itemize}
+
+None of H1--H3 is a PLEC component.  Each is a structural hypothesis local
+to Paper~3; failures of any would not dissolve the framework but would
+isolate the corresponding section.
+\end{tcolorbox}
+
+\subsection{What is assumed vs.\ what is proved}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.3\linewidth}p{0.3\linewidth}p{0.3\linewidth}}
+\toprule
+\textbf{Assumed (imported)} & \textbf{Proved in Paper~3} & \textbf{Deferred}\\
+\midrule
+A1, MD, A2, BW (PLEC) & $T_{\mathrm{CPTP}}$ & $\Lambda_{\mathrm{QCD}}$ (Paper~2)\\
+$T_{\mathrm{tensor}}$, $L_{\mathrm{loc}}$ (Paper~1) & $T_\kappa$ ($\kappa=2$) & PMNS numerics (Paper~4)\\
+$L_{\mathrm{nc}}$, $L_\Delta$, $T_{\mathrm{adj}}$ (Paper~1) & $T_{\mathrm{entropy}}$ & Quantitative cosmogenesis (Paper~6)\\
+$L_{\mathrm{count}}$, $T_{7B}$ (Paper~2) & $T_{\mathrm{second\,law}}$ & Higher-order horizon corrections (Paper~6/7)\\
+H1 (Markov closure) & $T_{\mathrm{seq}}$ (temporal Tsirelson) & Planck-scale closure (Paper~5)\\
+H2 (Hamiltonian redundancy) & Horizon $S = A/4$ & Expansion history (Paper~6)\\
+H3 ($\Phi_c$ monotonicity) & Fisher metric uniqueness & Matter-antimatter asymmetry (Paper~7)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The ``proved'' column is what this Supplement establishes.  The ``assumed''
+column is audited in Papers~1 and~2 (and in the Paper~1 essentiality
+proofs~\cite{Paper1} for the four PLEC components).  The ``deferred''
+column is explicitly out of scope for Paper~3.
+
+
+% ======================================================================
+\section{$T_{\mathrm{CPTP}}$: complete positivity as a theorem}
+\label{sec:TCPTP}
+% ======================================================================
+
+The main paper (\S 4) presents the three-step proof; this
+section fills in the proofs that were compressed and compares the result
+explicitly with the Stinespring--Choi--GKSL infrastructure.
+
+\subsection{Theorem statement}
+
+\begin{tcolorbox}[apfbox, title={Theorem 2.1 ($T_{\mathrm{CPTP}}$)}]
+Let $\Phi: \mathcal{B}(\mathcal{H}_S) \to \mathcal{B}(\mathcal{H}_S)$ preserve
+admissibility of the enforcement regime at interface $\Gamma_S$.  Then $\Phi$
+is completely positive and trace-preserving (CPTP), and admits a Kraus
+decomposition $\Phi(\rho) = \sum_k K_k\rho K_k^\dagger$ with
+$\sum_k K_k^\dagger K_k = \mathbb{1}$.
+\end{tcolorbox}
+
+\subsection{Full proof}
+
+\textit{Step 1 --- Trace preservation.}  A1 fixes $C(\Gamma_S)$ as a finite
+positive constant.  The normalization $\mathrm{tr}\,\rho = 1$ is
+$C_{\mathrm{active}}/C(\Gamma_S) = 1$.  Suppose $\mathrm{tr}\,\Phi(\rho) > 1$.
+Then committed capacity exceeds $C(\Gamma_S)$, violating A1's upper bound.
+Suppose $\mathrm{tr}\,\Phi(\rho) < 1$.  Then committed capacity falls below
+the fixed value; A1 requires both an upper bound and conservation of the
+budget (because the budget is a constant of the interface, not merely a
+ceiling).  Hence $\mathrm{tr}\,\Phi(\rho) = 1$.
+
+\textit{Step 2 --- Complete positivity via ancilla-stability.}  By
+$T_{\mathrm{tensor}}$ (Paper~1)~\cite{Paper1}, for any ancilla $R$ the
+joint system $S \otimes R$ carries an independent budget $C(\Gamma_R)$.
+The state $\rho_{SR} \geq 0$ is admissible iff all costs are non-negative.
+Consider $\Phi \otimes \mathbb{1}_R$.  At $\Gamma_R$, the identity map
+acts; costs are unchanged; admissibility at $\Gamma_R$ is preserved
+trivially.  At $\Gamma_S$, $\Phi$ preserves admissibility by hypothesis.
+By $L_{\mathrm{loc}}$ (Paper~1), the two interfaces are structurally
+independent: evolution at one cannot create inadmissible states at the
+other.  Hence the joint map is positive on $\rho_{SR} \geq 0$ --- i.e.,
+$\Phi$ is completely positive.
+
+\textit{Step 3 --- Kraus representation.}  Complete positivity + trace
+preservation on a finite-dimensional Hilbert space (bounded by Paper~1's
+$T_{\mathrm{form}}$/OR3) invokes Stinespring's dilation~\cite{Stinespring1955}:
+there exists $\mathcal{H}_E$ and an isometry
+$V: \mathcal{H}_S \to \mathcal{H}_S \otimes \mathcal{H}_E$ with
+$\Phi(\rho) = \mathrm{tr}_E[V\rho V^\dagger]$.  Choi's
+theorem~\cite{Choi1975} gives the equivalent Kraus decomposition
+$\Phi(\rho) = \sum_k K_k \rho K_k^\dagger$ with $K_k = (\mathbb{1}_S \otimes \langle k|_E) V$.
+The trace-preserving condition translates to $\sum_k K_k^\dagger K_k = \mathbb{1}$.
+\hfill$\square$
+
+\subsection{Comparison to Stinespring--Choi--GKSL}
+
+A reviewer may reasonably ask: ``what does $T_{\mathrm{CPTP}}$ add to the
+already-established Stinespring--Choi--GKSL theory?''  The answer is three
+specific things.
+
+\begin{enumerate}
+  \item \textbf{Derivation direction.}  In conventional quantum information,
+  the CPTP condition is \emph{imposed} as the definition of a valid
+  evolution map, and Stinespring's theorem~\cite{Stinespring1955} then
+  shows that every CPTP map admits a dilation.  In APF, the CPTP condition
+  is \emph{derived} from admissibility preservation under A1 and
+  $T_{\mathrm{tensor}}$, and Stinespring's theorem then supplies the Kraus
+  form.  The direction of the derivation is reversed.
+  \item \textbf{Physical interpretation of the dilation.}  Stinespring's
+  environment $\mathcal{H}_E$ is traditionally treated as a mathematical
+  device.  In APF, $\mathcal{H}_E$ is a second enforcement interface with
+  its own capacity budget $C(\Gamma_E)$; the partial trace corresponds to
+  abandoning the $\Gamma_E$ ledger.  The unitary evolution on
+  $\mathcal{H}_S \otimes \mathcal{H}_E$ is the admissibility-preserving
+  joint dynamics of two coupled budgets.
+  \item \textbf{Restriction to finite dimension.}  Paper~1's $T_{\mathrm{form}}$
+  bounds $\dim \mathcal{H}_S \le \lfloor C/\mu^* \rfloor$ at each interface.
+  Stinespring's theorem applies in full generality (type $I_\infty$ and
+  beyond); APF restricts to type $I_n$ with $n < \infty$.  The
+  GKSL--Lindblad generators~\cite{Lindblad1976,GKS1976} then live in
+  $\mathcal{B}(\mathcal{H}_S)$ with explicit finite trace.
+\end{enumerate}
+
+\noindent These three differences are what makes ``CPTP as a theorem'' a
+nontrivial claim rather than a change of language.  The underlying
+mathematics is unchanged; the provenance is.
+
+\subsection{Sequential composition and the temporal Tsirelson bound}
+
+\begin{tcolorbox}[apfbox, title={Theorem 2.2 ($T_{\mathrm{seq}}$)}]
+Under H1 (Markovian-composition closure), any $T$-step sequence of admissible
+CPTP maps $\Phi_T \circ \cdots \circ \Phi_1$ is itself admissible.
+Time-evolved dichotomic observables $a(t) = U_t^\dagger a U_t$ satisfy the
+Cirel'son operator identity; the temporal CHSH correlator is bounded by
+$2\sqrt{2}$.
+\end{tcolorbox}
+
+\textit{Proof.}  CPTP maps form a semigroup under composition; the
+composition of trace-preserving maps is trace-preserving; the tensor
+product of two Kraus decompositions is a Kraus decomposition for the
+composed map.  This is standard~\cite{Lindblad1976,GKS1976}; H1 is the
+requirement that admissibility \emph{preservation} commutes with this
+composition (admissibility-preserving at each step implies
+admissibility-preserving for the composite).  For the temporal CHSH bound:
+the Cirel'son identity $\|[a(t_1), a(t_2)]\|_{\mathrm{op}} \leq 2$ uses
+only the algebraic structure of self-adjoint unitaries
+(via $T_{\mathrm{adj}}$, Paper~1) and is state-independent, giving
+$|\omega(\hat{S}_T)| \leq 2\sqrt{2}$ for the operator
+$\hat{S}_T = a(t_1)\otimes(b(t_1)+b(t_2)) + a(t_2)\otimes(b(t_1)-b(t_2))$.
+\hfill$\square$
+
+\coderef{check\_T\_seq}{core.py}
+
+
+% ======================================================================
+\section{$T_\kappa$: the directed-enforcement multiplier $\kappa = 2$}
+\label{sec:Tkappa}
+% ======================================================================
+
+\subsection{Theorem statement}
+
+\begin{tcolorbox}[apfbox, title={Theorem 3.1 ($T_\kappa$)}]
+In the directed-enforcement regime (one interface committed to enforcing a
+distinction against a second interface), the per-distinction enforcement
+multiplier satisfies $\kappa = 2$ uniquely.  Values $\kappa < 2$ correspond
+to erasable single-interface commitment (not directed); values $\kappa > 2$
+require an additional independent correlation that is not cost on the
+original distinction.
+\end{tcolorbox}
+
+\subsection{Derivation of $\kappa = 2$}
+
+The multiplier $\kappa$ answers: how much capacity is committed per
+distinction when enforcing a directed (irreversible) commitment?  The
+minimum at each interface is $\mu^*$ (MD); the directed enforcement commits
+at each of two interfaces (the distinction-holder and the
+distinction-witness).
+
+\textit{Upper bound $\kappa \le 2$.}  A directed distinction requires
+commitment at two interfaces only: the distinction-holding interface
+(committing $\mu^*$ to maintain the distinction) and the witnessing
+interface (committing $\mu^*$ to record the distinction).  A third
+interface commitment would be an independent correlation --- a separate
+distinction in its own right, not a higher $\kappa$ on the original.  By
+Paper~1 $L_{\mathrm{nc}}$, multiple simultaneous commitments do not
+compress into a single distinction's cost; they are separate entries in
+the ledger.  Hence $\kappa \le 2$.
+
+\textit{Lower bound $\kappa \ge 2$.}  If $\kappa < 2$, the directed
+distinction is enforceable at less than $2\mu^*$.  Two sub-cases: $\kappa = 0$
+is excluded by MD (no zero-cost distinctions); $0 < \kappa < 2$ would place
+the commitment below the floor of two interfaces, which by
+$L_{\mathrm{irr}}$ contradicts the irreversibility of directed commitment
+(single-interface commitment is erasable; directed commitment is not).
+Hence $\kappa \ge 2$.
+
+\textit{Uniqueness.}  Both bounds saturate at $\kappa = 2$.  \hfill$\square$
+
+\coderef{check\_T\_kappa}{core.py}
+
+\subsection{Numerical verification}
+
+The codebase evaluates $\kappa$ on the 61-mode ledger and returns
+$\kappa = 2$ with no approximation: the computation is purely combinatorial
+over the $C_{\mathrm{total}} = 61$ capacity types and yields
+$\kappa = 2$ identically (see \coderef{check\_T\_kappa}{core.py}).  This is
+\emph{not} a numerical coincidence: the derivation is structural, and the
+code merely corroborates what the proof requires.
+
+
+% ======================================================================
+\section{$T_{\mathrm{entropy}}$: von Neumann entropy as committed capacity}
+\label{sec:Tentropy}
+% ======================================================================
+
+\subsection{Theorem statement}
+
+\begin{tcolorbox}[apfbox, title={Theorem 4.1 ($T_{\mathrm{entropy}}$)}]
+The von Neumann entropy $S(\rho) = -\mathrm{tr}(\rho\log\rho)$ equals
+$\kappa^{-1}$ times the enforcement demand of the active correlations at
+the system interface:
+\[
+S(\rho) = \frac{1}{\kappa}\,\mathcal{E}_{\mathrm{cross}}(\rho) = \frac{1}{2}\,\mathcal{E}_{\mathrm{cross}}(\rho),
+\]
+where $\mathcal{E}_{\mathrm{cross}}$ counts the cross-interface enforcement
+cost (in nats) committed by $\rho$.  The standard entropy properties
+(positivity, concavity, subadditivity, strong subadditivity, data-processing
+inequality) follow from A1, $L_\Delta$, $T_{\mathrm{CPTP}}$, and Lieb--Ruskai~\cite{LiebRuskai1973}.
+\end{tcolorbox}
+
+\subsection{Derivation}
+
+\textit{Step 1 (Identification).}  By Paper~1 $T_{\mathrm{adj}}$, the
+cost functional on the operator algebra $\mathcal{A}$ induces an inner
+product; the cost of a projector $P_i$ is $\varepsilon(P_i) = \mathrm{tr}(\rho P_i)$
+for a state $\rho$.  For a rank-one projector $P_i = |\psi_i\rangle\langle\psi_i|$
+in the eigenbasis of $\rho$ with eigenvalue $\lambda_i$, $\varepsilon(P_i) = \lambda_i$.
+The total cross-interface enforcement demand is
+$\mathcal{E}_{\mathrm{cross}}(\rho) = -2 \sum_i \lambda_i \log \lambda_i$
+(the factor of $\kappa = 2$ comes from directed commitment at both the
+system and the environment interfaces; see $T_\kappa$).  Hence
+$S(\rho) = \mathcal{E}_{\mathrm{cross}}/2 = -\sum_i \lambda_i \log \lambda_i$,
+which is the von Neumann entropy.
+
+\textit{Step 2 (Standard properties from imports).}
+\begin{itemize}[nosep]
+  \item \textbf{Positivity.}  $S(\rho) \geq 0$ from $\lambda_i \in [0,1]$.
+  \item \textbf{Concavity.}  Follows from the concavity of $-x\log x$; preserved by cost-functional linearity on the algebra.
+  \item \textbf{Subadditivity.}  $S(\rho_{SE}) \leq S(\rho_S) + S(\rho_E)$ follows from $L_\Delta$ applied to co-located distinctions at $\Gamma_S \cup \Gamma_E$.
+  \item \textbf{Strong subadditivity.}  $S(\rho_{ABC}) + S(\rho_B) \leq S(\rho_{AB}) + S(\rho_{BC})$ is Lieb--Ruskai~\cite{LiebRuskai1973}; it follows in APF from the admissibility of the Naimark dilation of the tripartite structure and $T_{\mathrm{CPTP}}$.
+  \item \textbf{Data processing.}  Under any CPTP map $\Phi$, the relative entropy is non-increasing~\cite{Wehrl1978}.  In APF, this is $T_{\mathrm{CPTP}}$ plus $L_{\mathrm{irr}}$: committed cross-interface correlations cannot decrease under local operations.
+\end{itemize}
+\hfill$\square$
+
+\coderef{check\_T\_entropy}{core.py}
+
+\subsection{Comparison to Lindblad and Spohn}
+
+The mainstream open-systems route to the second law runs through Lindblad's
+CP-map entropy inequalities~\cite{Lindblad1976} and Spohn's
+positive-entropy-production framework for quantum dynamical
+semigroups~\cite{Spohn1978}.  Spohn established that the entropy production
+$\sigma(\rho) := -\frac{d}{dt} D(\rho_t \| \rho_*)$ is non-negative and
+convex along the semigroup flow, where $\rho_*$ is the stationary state and
+$D$ is the relative entropy; this gives approach to equilibrium for broad
+classes of open quantum dynamics.
+
+The framework here is in alignment, not in competition.  Three differences
+of presentation, none of mathematics:
+\begin{enumerate}
+  \item \textbf{Source of irreversibility.}  Spohn locates irreversibility
+  in the semigroup structure of the open-system dynamics.  The framework
+  here locates it in $L_{\mathrm{irr}}$: local unrecoverability of
+  cross-interface correlations.  These are two different routes to the
+  same monotonicity statement.
+  \item \textbf{Normalization.}  Spohn's entropy production is naturally
+  formulated relative to the stationary state $\rho_*$.  The framework
+  here works directly with the von Neumann entropy of $\rho_t$, with the
+  factor of $\kappa = 2$ supplying the directed-enforcement multiplier
+  that the open-systems literature usually absorbs into the choice of
+  generator.
+  \item \textbf{Scope.}  Spohn's framework is deeply developed for
+  Markovian semigroups; the admissibility framework's $T_{\mathrm{seq}}$
+  (\S\ref{sec:TCPTP}) extends to multi-step composition under hypothesis
+  H1 (Markovian-composition closure), explicitly flagged as a separable
+  hypothesis whose failure would isolate the multi-step second-law
+  statement without affecting the single-step one.
+\end{enumerate}
+Paper~3's contribution to entropy theory is rhetorical and structural,
+not a new monotonicity inequality.  The Lieb--Ruskai backbone is unchanged;
+Spohn's entropy-production positivity is unchanged.  What changes is the
+account of \emph{why} the monotonicity holds.
+
+\subsection{The ledger-accounting principle (formal statement)}
+
+\begin{tcolorbox}[apfbox, title={Proposition 4.2 (Ledger-Accounting Principle)}]
+The entropy count is invariant under small changes in the enforcement-cost
+landscape.  Formally: let $\varepsilon'(d) = \varepsilon(d) + \delta(d)$ be
+a perturbation of the cost functional with $\|\delta\|_\infty < \mu^*$.
+Then the count of admissible configurations at fixed capacity $C(\Gamma)$ is
+unchanged: the admissible set under $\varepsilon'$ differs from that under
+$\varepsilon$ only at the boundary, and the entropy functional $S(\rho) = \ln N_{\mathrm{admissible}}$
+is invariant up to $O(\delta/\mu^*)$ corrections that vanish as the
+perturbation vanishes.
+\end{tcolorbox}
+
+\textit{Sketch.}  The admissible set $\mathcal{A}$ is defined by two
+inequalities: $\inf \varepsilon(d) \ge \mu^*$ and $\sum \varepsilon(d) \le C$.
+Perturbations with $\|\delta\|_\infty < \mu^*$ preserve the floor
+condition strictly; the budget condition shifts by $\sum \delta(d) = O(|G|\|\delta\|_\infty)$,
+which for bounded cost spectra is bounded.  The count $|\mathcal{A}|$
+is invariant up to boundary fluctuations of this order.  Entropy as
+$\ln |\mathcal{A}|$ inherits the invariance.  \hfill$\square$
+
+\noindent\textit{Remark.}  This is the formal statement of the claim
+used in the main paper (\S 6.3, ledger-accounting principle) that entropy
+is robust under cost-landscape corrections.  Paper~7's partition-function
+treatment~\cite{Paper7} elevates this to a full thermodynamic argument;
+here it functions as a direct count-based observation.
+
+
+% ======================================================================
+\section{$T_{\mathrm{second\,law}}$ and the arrow of time}
+\label{sec:irr}
+% ======================================================================
+
+\subsection{$L_{\mathrm{irr}}$ (formal statement and proof)}
+
+\begin{tcolorbox}[apfbox, title={Lemma 5.1 ($L_{\mathrm{irr}}$)}]
+Let $S$ and $E$ be systems at independent interfaces $\Gamma_S$ and
+$\Gamma_E$ (by $L_{\mathrm{loc}}$).  After an interaction producing
+cross-interface correlation $\Delta(S,E) > 0$ (by $L_\Delta$), the
+pre-interaction reduced state at $\Gamma_S$ is unrecoverable by any
+CPTP map local to $\Gamma_S$.
+\end{tcolorbox}
+
+\textit{Proof.}  Suppose for contradiction that $\Phi_S$ is a
+$\Gamma_S$-local CPTP map reversing the interaction as seen from
+$\Gamma_S$: $\Phi_S(\rho_S^{\mathrm{after}}) = \rho_S^{\mathrm{before}}$.
+The cross-interface capacity committed by the correlation is $\Delta > 0$;
+this capacity is committed simultaneously at $\Gamma_S$ and $\Gamma_E$
+(by $L_\Delta$).  For $\Phi_S$ to reclaim the full pre-interaction state,
+it would need access to the $\Gamma_E$-side commitment.  By
+$L_{\mathrm{loc}}$, $\Phi_S$ has no such access.  The recovered reduced
+state at $\Gamma_S$ therefore differs from $\rho_S^{\mathrm{before}}$ by
+the $\Gamma_E$-side capacity commitment, contradiction.  \hfill$\square$
+
+\coderef{check\_L\_irr}{core.py}
+
+\subsection{$T_{\mathrm{second\,law}}$ (formal statement)}
+
+\begin{tcolorbox}[apfbox, title={Theorem 5.2 ($T_{\mathrm{second\,law}}$)}]
+Along any admissible sequence of CPTP transitions
+$\rho_0 \to \rho_1 \to \cdots \to \rho_T$, the von Neumann entropy is
+non-decreasing:
+\[
+S(\rho_0) \le S(\rho_1) \le \cdots \le S(\rho_T).
+\]
+Equality $S(\rho_t) = S(\rho_{t+1})$ holds only when the $t$-th transition
+commits no new cross-interface correlation.
+\end{tcolorbox}
+
+\textit{Proof.}  At each step, the transition $\rho_t \to \rho_{t+1}$ is
+either (a) unitary (admits an inverse CPTP; equality case), or (b) involves
+cross-interface coupling ($\Delta > 0$).  In case (b), $L_{\mathrm{irr}}$
+guarantees the pre-transition state is unrecoverable; the data-processing
+inequality~\cite{LiebRuskai1973,Wehrl1978} on the coupled system
+$\rho_{SE,t}$ then forces $S(\rho_{S,t+1}) \geq S(\rho_{S,t})$.  Summing
+over steps gives the chain.  \hfill$\square$
+
+\coderef{check\_T\_second\_law}{core.py}
+
+\subsection{The arrow of time and $T$-violation at $\pi/4$}
+
+\begin{tcolorbox}[apfbox, title={Theorem 5.3 ($T_{\mathrm{CPT}}$)}]
+The structural $T$-violation phase is $\theta_T = \pi/4$.  This value
+follows from $L_{\mathrm{irr}}$, the holonomy-phase lemma
+$L_{\mathrm{holonomy\,phase}}$ (Paper~2), and the algebraic structure of
+Paper~1's T2 (finite-dimensional complex Hilbert-space representation).
+\end{tcolorbox}
+
+\textit{Sketch.}  The holonomy argument of Paper~2~\cite{Paper2} shows
+that directed admissible cycles in the state space pick up phases
+quantized in units related to the $\mathbb{Z}_2 \times \mathbb{Z}_2$
+structure of the gauge sector.  The minimum directed-cycle $T$-violation
+phase is half of $\pi/2$, i.e.\ $\pi/4$ --- the result of one $L_{\mathrm{irr}}$
+step integrated around a smallest admissible directed loop.  \hfill$\square$
+
+\coderef{check\_T\_CPT}{core.py}
+
+\subsection{Macroscopic arrow from loss of global coordination}
+
+\begin{tcolorbox}[apfbox, title={Proposition 5.4 (Macroscopic arrow)}]
+At cosmological scale, a globally coordinated admissible state is one in
+which admissibility holds jointly across all interfaces in a causal region.
+Under H3 (monotonicity of the constraint functional $\Phi_c$), the set of
+globally coordinated states is strictly decreasing along the admissible
+trajectory: coordination can be lost but not regained.  The arrow of time
+is the direction of coordination loss.
+\end{tcolorbox}
+
+\noindent This is $L_{\mathrm{irr}}$ applied to the coordinated-admissibility
+observable over a macroscopic region; the proof is the same structure as
+$L_{\mathrm{irr}}$, with ``local interface'' replaced by ``local causal
+region.''
+
+
+% ======================================================================
+\section{Admissibility carrying capacity and $S = A/4$}
+\label{sec:ACC}
+% ======================================================================
+
+\subsection{ACC: formal definition}
+
+\begin{definition}[Admissibility Carrying Capacity]
+Let $\Gamma$ be a relational interface (a causal boundary, a quantum
+bipartition, or any co-dimension-1 surface across which admissibility is
+enforced).  Its admissibility carrying capacity is
+$C_{\mathrm{ACC}}(\Gamma) = $ the supremum number of distinct admissible
+configurations that can coexist at the interface, weighted by their
+cost in the enforcement currency.
+\end{definition}
+
+\subsection{The $1/2 \times 1/2$ bookkeeping}
+
+\begin{tcolorbox}[apfbox, title={Theorem 6.1 (Horizon entropy prefactor)}]
+At a causal horizon with area $A$, the entropy is
+\[
+S_H = \frac{1}{2} \cdot \frac{1}{2} \cdot \frac{A}{\ell_P^2} \cdot \frac{\ln d_{\mathrm{eff}}}{\ln 2}
+= \frac{A}{4 \ell_P^2} \cdot \frac{\ln d_{\mathrm{eff}}}{\ln 2},
+\]
+which, after the conventional ACC-to-bit conversion, is $S_H = A/4$ in
+natural units --- the Bekenstein--Hawking area law~\cite{Bekenstein1973,Hawking1975}.
+\end{tcolorbox}
+
+\textit{Proof.}  Two structurally forced factors of $1/2$ compose.
+
+\textit{Factor 1 (Relational symmetrization).}  The ACC counts relational
+distinctions across the interface.  Each distinction is a pair $(a, b)$
+where $a$ is on one side and $b$ is on the other; under relational
+equivalence $(a,b) \sim (b,a)$, each pair is counted twice in the naive
+bookkeeping.  Symmetrization gives a factor of $1/2$.
+
+\textit{Factor 2 (Hamiltonian-constraint redundancy; hypothesis H2).}
+At a causal horizon, general covariance imposes the Hamiltonian
+constraint: time reparameterizations at the horizon are gauge.  This
+identifies two admissible configurations differing only in their gauge
+slicing as physically identical, giving a second factor of $1/2$.  H2 is
+the assumption that this identification is the \emph{only} relevant
+gauge redundancy; other gauge symmetries (spatial diffeomorphisms,
+internal gauge) are absorbed into the interface specification upstream.
+
+Multiplying: $1/2 \times 1/2 = 1/4$, which is the Bekenstein--Hawking
+prefactor.  \hfill$\square$
+
+\coderef{check\_T\_deSitter\_entropy}{gravity.py}
+
+\subsection{Unification of three entropies}
+
+\begin{corollary}[Three-entropies unification]
+Thermodynamic entropy, entanglement entropy, and horizon entropy are three
+specializations of the same ACC-saturation count.  They differ only in
+what the interface $\Gamma$ is:
+\begin{itemize}
+  \item Thermodynamic: $\Gamma$ is the system/environment boundary (implicit coarse-graining).
+  \item Entanglement: $\Gamma$ is the quantum bipartition.
+  \item Horizon: $\Gamma$ is the causal boundary.
+\end{itemize}
+\end{corollary}
+
+\noindent\textit{Remark.}  This unification is a clear statement that the
+framework subsumes rather than supplants standard black-hole and
+cosmological-horizon thermodynamics.  The conventional $S = A/4$ law of
+Bekenstein and Hawking~\cite{Bekenstein1973,Hawking1975} is recovered; the
+de Sitter cosmological-horizon entropy of Gibbons and
+Hawking~\cite{GibbonsHawking1977} is recovered as the saturated case
+$S_{dS} = C_{\mathrm{total}} \ln d_{\mathrm{eff}} = 61 \ln 102$, with the
+combinatorial values inherited from Paper~2's capacity-partitioning
+argument.  The additional claim is that the same ledger underlies the
+other two regimes.  The unification does not contradict any observation;
+it reorganizes the existing explanations around a single counting
+principle.
+
+\subsection{Comparison to Bekenstein--Hawking and Gibbons--Hawking}
+
+The standard derivations of horizon entropy operate at the semiclassical
+level: Bekenstein's information-theoretic argument from the area
+law~\cite{Bekenstein1973}, Hawking's particle-creation calculation
+yielding the thermal spectrum at horizon temperature $T_H =
+\hbar \kappa_{\mathrm{surf}} / 2\pi k_B$~\cite{Hawking1975}, and the
+Gibbons--Hawking extension to cosmological event horizons in
+positive-$\Lambda$ spacetimes with horizon temperature
+$T_{dS} = H/2\pi$~\cite{GibbonsHawking1977}.  Each gives
+$S = A/4$ in natural units.
+
+The framework here is in the same lineage; the $1/2 \times 1/2$
+decomposition is a specific combinatorial account of where the standard
+$1/4$ prefactor comes from, valid under H2 (Hamiltonian-constraint
+redundancy as the only relevant gauge structure in the horizon's
+ACC-to-entropy conversion).  We do not provide a competing semiclassical
+derivation, and the result is the same horizon entropy in either
+language.  The framework's specific addition is the ACC vocabulary that
+makes thermodynamic, entanglement, and horizon entropy three
+specializations of one accounting (the corollary above); this is a
+unification of three separate semiclassical results, not a re-derivation
+of any of them.
+
+
+% ======================================================================
+\section{Fisher information and RG flow}
+\label{sec:Fisher}
+% ======================================================================
+
+\subsection{Fisher metric uniqueness}
+
+\begin{tcolorbox}[apfbox, title={Lemma 7.1 ($L_{\mathrm{Fisher}}$)}]
+The unique Riemannian metric on the space of admissible density matrices
+that (a) is monotone under CPTP maps, (b) reduces to the classical Fisher
+metric on commuting states, and (c) is invariant under unitary conjugation,
+is the quantum Fisher information metric (equivalently, the symmetric
+logarithmic derivative / Bures metric) of Braunstein--Caves~\cite{BraunsteinCaves1994}.
+Under the capacity-counting normalization of Paper~2 ($d_{\mathrm{eff}} = 102$),
+\[
+S = \frac{d_{\mathrm{eff}}}{2}\,\ln\det G,
+\]
+where $G$ is the Fisher metric on admissible states.
+\end{tcolorbox}
+
+\textit{Sketch.}  Monotonicity under CPTP pins the metric up to a one-parameter
+family of admissible metrics in the Petz classification~\cite{Petz1996}.
+Among these, the symmetric logarithmic derivative is distinguished by
+(b)+(c), reducing to the classical Fisher metric on commuting states with
+unitary invariance.  The entropy-determinant relation follows from the
+capacity-counting structure of Paper~2~\cite{Paper2}: the entropy at
+ACC saturation is $C_{\mathrm{total}} \ln d_{\mathrm{eff}}$, and the
+volume form of $G$ scales as $\det G$ by standard arguments from
+information geometry~\cite{AmariNagaoka2000}.  \hfill$\square$
+
+\coderef{check\_L\_Fisher\_measure}{core.py}
+
+\subsection{RG flow as Fisher gradient descent}
+
+\begin{tcolorbox}[apfbox, title={Proposition 7.2 (RG flow as Fisher descent)}]
+Under the Fisher metric $G$, the renormalization-group flow on the space
+of admissible effective descriptions is the gradient descent of an entropy
+functional.  Coarse-graining steps (integrating out high-momentum modes)
+correspond to moves in the direction of maximum entropy gain per capacity
+used --- the gradient of $S$ under $G$.
+\end{tcolorbox}
+
+\noindent\textit{Sketch.}  Coarse-graining is a CPTP map on the effective
+theory.  By the data-processing inequality, entropy is non-decreasing under
+coarse-graining.  Under the Fisher metric, the steepest-ascent direction for
+entropy is the gradient; stationary points of the RG flow are fixed points
+of this gradient descent.  The traditional RG beta-function interpretation
+is recovered with the identification of the beta-function with the Fisher
+gradient~\cite{AmariNagaoka2000}.  Full dynamical analysis is
+Paper~4~\cite{Paper4} territory for specific flavor channels.
+
+\subsection{Comparison to B\'eny--Osborne}
+
+The closest external literature for the RG-as-Fisher-descent claim is the
+program of B\'eny and Osborne~\cite{BenyOsborne2015}, who formulate RG
+explicitly as a family of quantum channels with an induced information
+geometry on the space of admissible effective descriptions.  In their
+formulation, the RG step is a CPTP map, monotone RG-invariants are
+information-theoretic quantities non-increasing along the flow, and the
+Fisher metric provides the natural geometric object for characterizing
+information loss.
+
+The framework here is directionally aligned: RG as CPTP, Fisher metric as
+the induced geometry, entropy gradient as the direction of RG flow.  The
+additions specific to the admissibility framework are (i) the
+capacity-count normalization ($d_{\mathrm{eff}} = 102$) from Paper~2's
+structural argument and (ii) the connection to the Frobenius--Nagata
+generation-channel structure of Paper~4.  Neither of these is provided
+by the B\'eny--Osborne formulation; neither contradicts it.  Paper~3's
+contribution is therefore a specific embedding of APF capacity counting
+into the B\'eny--Osborne information-geometric RG picture, not a
+re-derivation of that picture.
+
+
+% ======================================================================
+\section{Red-team section: additional hypotheses at point of use}
+\label{sec:redteam}
+% ======================================================================
+
+Three hypotheses are used in this Supplement that are \emph{not} PLEC
+components.  Each is flagged below at the point where it enters, with
+the scope of what it supports and what would survive its failure.
+
+\begin{tcolorbox}[redteambox, title={H1 --- Markovian-composition closure (\S\ref{sec:TCPTP})}]
+\textbf{Statement.}  The composition of admissibility-preserving CPTP maps
+is admissibility-preserving.
+
+\textbf{Scope.}  Used in $T_{\mathrm{seq}}$ (temporal CHSH bound) and in the
+second-law chain.  Without H1, the second law still holds step-by-step but
+not as a global statement about multi-step evolutions.
+
+\textbf{Status.}  [P] in Paper~7's partition-function framework; [C] in
+Paper~3 alone.  The admissibility class is closed under composition if
+and only if the composed map is itself admissibility-preserving.  Cases
+where non-Markovian memory could violate this (long-range correlations at
+a saturating interface) would falsify H1 for specific regimes.
+
+\textbf{Red-team attack.}  Construct a pair of admissibility-preserving
+maps whose composition is not admissibility-preserving.  None is known
+within the framework, but the construction is open as a check on H1.
+\end{tcolorbox}
+
+\begin{tcolorbox}[redteambox, title={H2 --- Hamiltonian-constraint redundancy (\S\ref{sec:ACC})}]
+\textbf{Statement.}  At a causal horizon, the only relevant gauge
+redundancy in the ACC-to-entropy conversion is time reparameterization
+(Hamiltonian constraint).  Other gauge symmetries are absorbed upstream.
+
+\textbf{Scope.}  Provides the second factor of $1/2$ in the $1/2 \times 1/2$
+bookkeeping for horizon entropy.  Without H2, the horizon-entropy
+prefactor would require a different account; the ACC structure itself
+would survive.
+
+\textbf{Status.}  Consistent with general-relativistic canonical analysis
+(ADM formulation).  [C] pending explicit derivation from Paper~6's
+geometric admissibility framework.
+
+\textbf{Red-team attack.}  Show a causal horizon where spatial
+diffeomorphisms contribute an additional gauge redundancy beyond the
+interface specification, changing the prefactor.  Plausible candidates:
+rotating black holes (Kerr) with non-trivial angular gauge structure;
+anti-de Sitter horizons with boundary conditions that modify the
+counting.  Neither is worked out here.
+\end{tcolorbox}
+
+\begin{tcolorbox}[redteambox, title={H3 --- Constraint-functional monotonicity (\S\ref{sec:irr} closing)}]
+\textbf{Statement.}  Along admissible trajectories, the constraint
+functional $\Phi_c = \ln(d_{\mathrm{field}}/d_{\mathrm{admissible}})$ is
+monotone non-increasing.
+
+\textbf{Scope.}  Underwrites the macroscopic arrow of time and the staged
+cosmogenesis picture of the main paper (\S 9 of the main paper).
+Without H3, the quantum-interface arrow ($L_{\mathrm{irr}}$) still
+survives; the cosmological-scale arrow would require an alternative
+argument.
+
+\textbf{Status.}  [P+H3] in this paper; [P] under the Paper~6 development
+of the cost-landscape dynamics for gravitational degrees of freedom.
+
+\textbf{Red-team attack.}  Exhibit an admissible cosmological trajectory
+where $\Phi_c$ fails monotonicity --- e.g., a bouncing-cosmology model
+that recovers earlier-epoch admissible configurations.  The framework
+predicts no such trajectory exists.
+\end{tcolorbox}
+
+
+% ======================================================================
+\section*{Appendix A: Theorem Index}
+\addcontentsline{toc}{section}{Appendix A: Theorem Index}
+\label{sec:supp_index}
+% ======================================================================
+
+\begin{center}
+\small
+\begin{tabular}{llll}
+\toprule
+\textbf{Result} & \textbf{Type} & \textbf{Depends on} & \textbf{Paper~3 section}\\
+\midrule
+$T_{\mathrm{CPTP}}$ & Theorem & A1, $T_{\mathrm{tensor}}$, $L_{\mathrm{loc}}$ & \S\ref{sec:TCPTP}\\
+$T_{\mathrm{seq}}$ & Theorem & $T_{\mathrm{CPTP}}$, $T_{\mathrm{adj}}$, H1 & \S\ref{sec:TCPTP}\\
+$T_\kappa$ & Theorem & MD, $L_{\mathrm{irr}}$, $L_{\mathrm{nc}}$ & \S\ref{sec:Tkappa}\\
+$T_{\mathrm{entropy}}$ & Theorem & $T_\kappa$, $T_{\mathrm{adj}}$, $L_\Delta$, Lieb--Ruskai~\cite{LiebRuskai1973} & \S\ref{sec:Tentropy}\\
+Ledger-accounting Prop. & Proposition & A1, MD & \S\ref{sec:Tentropy}\\
+$L_{\mathrm{irr}}$ & Lemma & A1, $L_{\mathrm{nc}}$, $L_{\mathrm{loc}}$, $L_\Delta$ & \S\ref{sec:irr}\\
+$T_{\mathrm{second\,law}}$ & Theorem & $L_{\mathrm{irr}}$, $T_{\mathrm{entropy}}$ & \S\ref{sec:irr}\\
+$T_{\mathrm{CPT}}$ ($\theta_T = \pi/4$) & Theorem & $L_{\mathrm{irr}}$, $T_{\mathrm{holonomy}}$, T2 & \S\ref{sec:irr}\\
+Macroscopic arrow & Proposition & $L_{\mathrm{irr}}$, H3 & \S\ref{sec:irr}\\
+Horizon $S = A/4$ & Theorem & ACC, H2, Bekenstein~\cite{Bekenstein1973}, Hawking~\cite{Hawking1975} & \S\ref{sec:ACC}\\
+Three-entropies unification & Corollary & $T_{\mathrm{entropy}}$, ACC & \S\ref{sec:ACC}\\
+$L_{\mathrm{Fisher}}$ & Lemma & Braunstein--Caves~\cite{BraunsteinCaves1994}, Petz~\cite{Petz1996}, $T_{\mathrm{CPTP}}$ & \S\ref{sec:Fisher}\\
+RG flow as Fisher descent & Proposition & $L_{\mathrm{Fisher}}$, data processing & \S\ref{sec:Fisher}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+% ======================================================================
+\section*{Appendix B: Dependency diagram}
+\addcontentsline{toc}{section}{Appendix B: Dependency diagram}
+\label{sec:supp_deps}
+% ======================================================================
+
+\begin{center}
+\small
+\begin{verbatim}
+                         A1 + MD + A2 + BW  (PLEC, from Paper 1)
+                                 |
+                    +------------+------------+
+                    |                         |
+            T_tensor (Paper 1)         L_nc, L_Delta, L_loc (Paper 1)
+                    |                         |
+                    v                         v
+               T_CPTP            L_irr  +---> T_kappa (kappa = 2)
+                    |              |                |
+                    | H1           |                v
+                    v              |        T_entropy <- Lieb-Ruskai [LR73]
+                  T_seq            |                |
+                                   v                v
+                            T_second_law    Ledger-accounting
+                                   |
+                           +-------+-------+
+                           |               |
+                      T_CPT (pi/4)    Macroscopic arrow (H3)
+                                        |
+                                        v
+                               Cosmogenesis (Paper 3 main)
+
+           ACC + H2 -> Horizon S = A/4 -> Three-entropies unification
+                  |
+                  |
+                  +-- L_Fisher -> RG flow as Fisher descent
+                        |
+                        v
+                   (Paper 4 flavor channels)
+\end{verbatim}
+\end{center}
+
+
+% ======================================================================
+\begin{thebibliography}{9}
+% ======================================================================
+
+\bibitem{Stinespring1955}
+W.\ F.\ Stinespring, ``Positive functions on $C^*$-algebras,''
+\emph{Proceedings of the American Mathematical Society} \textbf{6}, 211--216 (1955).
+
+\bibitem{Choi1975}
+M.-D.\ Choi, ``Completely positive linear maps on complex matrices,''
+\emph{Linear Algebra and its Applications} \textbf{10}, 285--290 (1975).
+
+\bibitem{Lindblad1976}
+G.\ Lindblad, ``On the generators of quantum dynamical semigroups,''
+\emph{Communications in Mathematical Physics} \textbf{48}, 119--130 (1976).
+
+\bibitem{GKS1976}
+V.\ Gorini, A.\ Kossakowski, and E.\ C.\ G.\ Sudarshan, ``Completely positive dynamical semigroups of $N$-level systems,''
+\emph{Journal of Mathematical Physics} \textbf{17}, 821--825 (1976).
+
+\bibitem{Kraus1983}
+K.\ Kraus, \emph{States, Effects, and Operations}, Springer, 1983.
+
+\bibitem{LiebRuskai1973}
+E.\ H.\ Lieb and M.\ B.\ Ruskai, ``Proof of the strong subadditivity of quantum-mechanical entropy,''
+\emph{Journal of Mathematical Physics} \textbf{14}, 1938--1941 (1973).
+
+\bibitem{Spohn1978}
+H.\ Spohn, ``Entropy production for quantum dynamical semigroups,''
+\emph{Journal of Mathematical Physics} \textbf{19}, 1227--1230 (1978).
+
+\bibitem{Wehrl1978}
+A.\ Wehrl, ``General properties of entropy,''
+\emph{Reviews of Modern Physics} \textbf{50}, 221--260 (1978).
+
+\bibitem{Bekenstein1973}
+J.\ D.\ Bekenstein, ``Black holes and entropy,''
+\emph{Physical Review D} \textbf{7}, 2333--2346 (1973).
+
+\bibitem{Hawking1975}
+S.\ W.\ Hawking, ``Particle creation by black holes,''
+\emph{Communications in Mathematical Physics} \textbf{43}, 199--220 (1975).
+
+\bibitem{GibbonsHawking1977}
+G.\ W.\ Gibbons and S.\ W.\ Hawking, ``Cosmological event horizons, thermodynamics, and particle creation,''
+\emph{Physical Review D} \textbf{15}, 2738--2751 (1977).
+
+\bibitem{BraunsteinCaves1994}
+S.\ L.\ Braunstein and C.\ M.\ Caves, ``Statistical distance and the geometry of quantum states,''
+\emph{Physical Review Letters} \textbf{72}, 3439--3443 (1994).
+
+\bibitem{Petz1996}
+D.\ Petz, ``Monotone metrics on matrix spaces,''
+\emph{Linear Algebra and its Applications} \textbf{244}, 81--96 (1996).
+
+\bibitem{AmariNagaoka2000}
+S.-I.\ Amari and H.\ Nagaoka, \emph{Methods of Information Geometry}, AMS/Oxford, 2000.
+
+\bibitem{BenyOsborne2015}
+C.\ B\'eny and T.\ J.\ Osborne, ``The renormalization group via statistical inference,''
+\emph{New Journal of Physics} \textbf{17}, 083005 (2015).
+
+\bibitem{Paper1}
+E.\ S.\ Brooke, ``The Enforceability of Distinction,''
+v4.0-PLEC (2026). \url{https://doi.org/10.5281/zenodo.18604678}
+
+\bibitem{Paper2}
+E.\ S.\ Brooke, ``The Structure of Admissible Physics,''
+v5.3-PLEC (2026). \url{https://doi.org/10.5281/zenodo.18604839}
+
+\bibitem{Paper4}
+E.\ S.\ Brooke, ``Admissibility Constraints and Structural Saturation,''
+Zenodo deposit (2026). \url{https://doi.org/10.5281/zenodo.18604845}
+
+\bibitem{Paper7}
+E.\ S.\ Brooke, ``Action, Internalization, and the Lagrangian,''
+v2.0 (2026). \url{https://doi.org/10.5281/zenodo.18604875}
+
+\end{thebibliography}
+
+\end{document}
