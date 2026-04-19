@@ -10,15 +10,30 @@ If you are a human: `README.md` is written for you. This file is for AI assistan
 
 AI agents have a recurring failure mode on this project: responding to APF requests with fluent-but-wrong output because the relevant context was never loaded. This file is the minimum context load to reason about Paper 3 of the APF series honestly.
 
-Expected time to completion: **5–10 minutes.** After this, you should be able to verify any claim in the paper, answer substantive questions, or critique external proposals against the framework's known constraints.
+This file is structured in three tiers. **Tier 1** (§0 below) is the 60-second mental map — read it even if you plan to skip everything else. **Tier 2** (§1 corpus table + §2 the seven steps) is 5–10 minutes of operational loading; it is what the "ready to work" state actually requires. **Tier 3** (§3 + `REVIEWERS_GUIDE.md` + the manuscript itself) is full audit depth, only when the task demands it.
 
 ---
 
-## §0 — The corpus at a glance (read this first)
+## §0 — 60-second mental map (Tier 1)
+
+**What APF is.** APF is a single-axiom framework. The only axiom is that enforcement (the cost of maintaining physical distinction) is finite (Axiom A1). From A1 and its four-component structure (PLEC), 342 theorems derive the Standard Model gauge group SU(3)xSU(2)xU(1), 45 fermions, three generations, and 48 quantitative predictions with zero free parameters. Each paper contributes one layer: Paper 0 states the ontology; Papers 1-7 build the derivation chain; Paper 13 is the master reference. The codebase (v6.9) is the authoritative specification; the papers are prose guides to reading the code.
+
+**What this paper contributes.** Three results from the foundation of Paper 1, all following from PLEC's four structurally necessary components: complete positivity as a theorem (T_CPTP); entropy as committed capacity (T_entropy + T_kappa with kappa=2 derived); the arrow of time from irreversibility (L_irr + T_second_law). Extends to Geometric Carrying Capacity (ACC), horizon entropy S = A/4, three-entropies unification, and staged cosmogenesis. Now includes a dedicated 'Relation to prior work' section positioning each major claim against its mainstream comparator (Stinespring/Choi/GKSL, Lieb-Ruskai/Spohn, Bekenstein-Hawking-Gibbons-Hawking, Petz/Beny-Osborne, Jarlskog/T2K).
+
+**What this repo verifies vs what it imports.** This repo locally verifies 13 theorem checks drawn from Paper 3's own dependency subset. Results from Papers 1 and 2 are imported, not re-derived here. The full APF corpus (and which paper owns which result) is in §1 below.
+
+**Scope — after reading only this repo:**
+
+- **You may:** summarize Paper 3's argument and results; explain the local 13-theorem subset; run all bundled checks to verify them; cite the paper by its DOI.
+- **You may not:** claim mastery of the full APF corpus on the basis of this repo alone; re-derive results that belong to other papers using only material here; present imported results as locally derived in this repo; treat the bundled check subset as the whole engine (the canonical bank is 342 theorems / 355 checks; this repo contains a subset).
+
+**Canonical state (one source of truth).** Codebase **v6.9**, frozen 2026-04-18. Full engine: **355** verify_all checks, **342** bank-registered theorems, **48** quantitative predictions. This repo bundles 13 of those checks for Paper 3's dependency subset. If you see a different count anywhere, this line is canonical.
+
+---
+
+## §1 — The corpus at a glance (Tier 1)
 
 This repo is **one paper-companion** in a 9-paper series. Before you treat any claim as the whole framework, know what else exists.
-
-The Admissibility Physics Framework (APF) is a single-axiom derivation of the Standard Model from finite information capacity. The full corpus, with canonical references:
 
 | # | Title | Zenodo DOI | GitHub repo | Status |
 |---|---|---|---|---|
@@ -37,11 +52,11 @@ You are reading the companion to **Paper 3** (this repo: https://github.com/Etha
 
 **When in doubt about scope:** if the question is about a result outside Paper 3, point the user (or yourself) to the relevant paper above. Do not try to derive it from the bundled subset; the canonical state is the codebase, not this slice.
 
-**Machine-readable equivalent:** [`ai_context/repo_map.json`](ai_context/repo_map.json) contains the same corpus inventory plus the full file map (purpose, audience, read-order, references). Load that file once and you have the entire repo structure indexed.
+**Machine-readable equivalent.** For programmatic use, [`ai_context/repo_map.json`](ai_context/repo_map.json), [`ai_context/theorems.json`](ai_context/theorems.json), and [`ai_context/derivation_graph.json`](ai_context/derivation_graph.json) are the primary machine interfaces — they encode the same corpus inventory, full theorem catalog, and dependency DAG in structured form. For AI agents, those three JSON files are often more useful than the prose of this file. Root-level copies are also present at the repo root for discoverability.
 
 ---
 
-## The seven steps
+## §2 — Operational loading (Tier 2): the seven steps
 
 ### Step 1 — Verify the code runs (30 seconds)
 

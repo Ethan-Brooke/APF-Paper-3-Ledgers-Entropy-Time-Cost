@@ -13,6 +13,20 @@ See https://doi.org/10.5281/zenodo.18604548 for the full codebase.
 import math as _math
 from fractions import Fraction
 from apf.apf_utils import check, CheckFailure, _result, _zeros, _eye, _diag, _mat, _mm, _mv, _madd, _msub, _mscale, _dag, _tr, _det, _fnorm, _aclose, _eigvalsh, _kron, _outer, _vdot, _zvec, _vkron, _vscale, _vadd, _eigh_3x3, _eigh, dag_put, dag_get
+if __name__ == '__main__':
+    passed = failed = 0
+    for name in sorted(_CHECKS):
+        try:
+            result = _CHECKS[name]()
+            print(f'  PASS  {name}')
+            passed += 1
+        except Exception as e:
+            print(f'  FAIL  {name}: {e}')
+            failed += 1
+    total = passed + failed
+    print(f'\n{passed}/{total} checks passed.')
+    if failed:
+        raise SystemExit(1)
 from apf.apf_utils import check, CheckFailure, _result, _zeros, _eye, _diag, _mat, _mm, _mv, _madd, _msub, _mscale, _dag, _tr, _det, _fnorm, _aclose, _eigvalsh, _kron, _outer, _vdot, _zvec, _vkron, _vscale, _vadd, _eigh_3x3, _eigh, _partial_trace_B, _vn_entropy, dag_get, dag_put, dag_has
 from apf.apf_utils import check, CheckFailure, _result, _zeros, _eye, _diag, _mat, _mm, _mv, _madd, _msub, _mscale, _dag, _tr, _det, _fnorm, _aclose, _eigvalsh, _kron, _outer, _vdot, _zvec, _vkron, _vscale, _vadd, _eigh_3x3, _eigh, dag_get
 

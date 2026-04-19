@@ -15,7 +15,16 @@ verifies the 13-theorem subset directly cited by the manuscript.
 import sys
 import argparse
 import time
-from apf.bank import REGISTRY, run_all, get_check
+from apf.bank import REGISTRY, run_all
+try:
+    from apf.bank import get_check
+except ImportError:
+    # Canonical apf/bank.py (used by Paper 13 full-codebase mode) doesn't
+    # define get_check; fall back to REGISTRY lookup.
+    def get_check(name):
+        if name in REGISTRY:
+            return REGISTRY[name]
+        raise KeyError(f"Check '{name}' not in REGISTRY")
 
 
 def main():
@@ -45,9 +54,26 @@ def main():
     results = run_all(verbose=args.verbose)
     elapsed = time.time() - start
 
-    passed = sum(1 for r in results if r.get('passed', True))
-    failed = len(results) - passed
-    total = len(results)
+    # Three possible return shapes:
+    #   - list[dict]   — paper-subset bank.py (per-result dict)
+    #   - dict[str, dict] — canonical apf/bank.py (Paper 13 full-codebase mode)
+    #   - list[str]    — older bank.py variants (status lines)
+    if isinstance(results, dict):
+        # Canonical: results is {check_name: result_dict}
+        result_iter = list(results.values())
+        passed = sum(1 for r in result_iter if isinstance(r, dict) and r.get('passed', True))
+        failed = sum(1 for r in result_iter if isinstance(r, dict) and not r.get('passed', True))
+        total = len(result_iter)
+    elif results and isinstance(results[0], dict):
+        result_iter = results
+        passed = sum(1 for r in result_iter if r.get('passed', True))
+        failed = len(result_iter) - passed
+        total = len(result_iter)
+    else:
+        result_iter = list(results)
+        passed = len(result_iter)
+        failed = 0
+        total = len(result_iter)
 
     print()
     print("=" * 72)
@@ -57,8 +83,8 @@ def main():
 
     if failed > 0:
         print("\nFailed checks:")
-        for r in results:
-            if not r.get('passed', True):
+        for r in result_iter:
+            if isinstance(r, dict) and not r.get('passed', True):
                 print(f"  - {r.get('name', '?')}: {r.get('error', 'no detail')}")
         sys.exit(1)
 

@@ -9,7 +9,7 @@ This file tracks the version history of Paper 3 (Ledgers: Admissible Dynamics, E
 - **Version in this repo:** v3.2
 - **File in this repo:** `Paper_3_Ledgers_Entropy_Time_Cost_v3.2.tex` + `.pdf`
 - **Page count:** 32 pp
-- **Release date:** 2026-04-18
+- **Release date:** 2026-04-19
 - **Codebase version at build:** v6.9 (2026-04-18)
 
 ## Zenodo record
