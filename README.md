@@ -4,7 +4,9 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18604844.svg)](https://doi.org/10.5281/zenodo.18604844) [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Ethan-Brooke/APF-Paper-3-Ledgers-Entropy-Time-Cost/blob/main/APF_Reviewer_Walkthrough.ipynb)
 
-[Interactive Derivation DAG](https://ethan-brooke.github.io/APF-Paper-3-Ledgers-Entropy-Time-Cost/) · [Theorem Map](#theorem-mapping-table) · [Reviewers' Guide](REVIEWERS_GUIDE.md) · [Citation](#citation)
+[Interactive Derivation DAG](https://ethan-brooke.github.io/APF-Paper-3-Ledgers-Entropy-Time-Cost/) · [Theorem Map](#theorem-mapping-table) · [Reviewers' Guide](REVIEWERS_GUIDE.md) · [The full APF corpus](#the-full-apf-corpus) · [Citation](#citation)
+
+> **AI agents:** start with [`START_HERE.md`](START_HERE.md) — operational checklist that loads the framework context in 5–10 minutes. The corpus inventory and full file map are in [`ai_context/repo_map.json`](ai_context/repo_map.json).
 
 ---
 
@@ -14,7 +16,7 @@ Three results from the foundation of Paper 1, all following from PLEC's four str
 
 This repository is the executable proof.
 
-The codebase is a faithful subset of the canonical APF codebase v6.8 (frozen 2026-04-18; 348 verify_all checks, 335 bank-registered theorems across 18 modules). Each theorem in the manuscript traces to a named `check_*` function in `apf/core.py`, which can be called independently and returns a structured result.
+The codebase is a faithful subset of the canonical APF codebase v6.9 (frozen 2026-04-18; 355 verify_all checks, 342 bank-registered theorems across 19 modules + `apf/standalone/`). Each theorem in the manuscript traces to a named `check_*` function in `apf/core.py`, which can be called independently and returns a structured result.
 
 The codebase requires Python 3.8+ and NumPy / SciPy (some numerical lemmas use them; see `pyproject.toml`).
 
@@ -91,7 +93,18 @@ The [interactive DAG](https://ethan-brooke.github.io/APF-Paper-3-Ledgers-Entropy
 
 ```
 ├── README.md                              ← you are here
+├── START_HERE.md                          ← AI operational checklist; read-first for AI agents
 ├── REVIEWERS_GUIDE.md                     ← physics-first walkthrough for peer reviewers
+├── ai_context/                            ← AI onboarding pack (corpus map, theorems, glossary, etc.)
+│   ├── AGENTS.md                          ← authoritative entry point for AI agents
+│   ├── FRAMEWORK_OVERVIEW.md              ← APF in 5 minutes
+│   ├── GLOSSARY.md                        ← axioms, PLEC primitives, epistemic tags
+│   ├── AUDIT_DISCIPLINE.md                ← engagement posture for critique/proposal
+│   ├── OPEN_PROBLEMS.md                   ← catalog of open problems + verdicts
+│   ├── repo_map.json                      ← machine-readable map of this repo
+│   ├── theorems.json                      ← machine-readable theorem catalog
+│   ├── derivation_graph.json              ← theorem DAG as JSON
+│   └── wiki/                              ← bundled APF wiki (concepts, papers, codebase)
 ├── apf/
 │   ├── core.py                            ← 13 theorem check functions
 │   ├── apf_utils.py                       ← exact arithmetic + helpers
@@ -114,7 +127,7 @@ The [interactive DAG](https://ethan-brooke.github.io/APF-Paper-3-Ledgers-Entropy
 
 **Derived:** (see Theorem mapping table above)
 
-**Not derived here:** Specific results outside this paper's scope live in companion papers — see [`APF_Paper_Index.md`](https://github.com/Ethan-Brooke) for the full series.
+**Not derived here:** Specific results outside this paper's scope live in companion papers — see the corpus table below for the full 9-paper series.
 
 ---
 
@@ -130,10 +143,35 @@ The [interactive DAG](https://ethan-brooke.github.io/APF-Paper-3-Ledgers-Entropy
 }
 ```
 
+For the full citation lineage (concept-DOI vs version-DOI, related identifiers, bibtex for all corpus papers), see [`ai_context/CITING.md`](ai_context/CITING.md).
+
+---
+
+## The full APF corpus
+
+This repository is **one paper-companion** in a 9-paper series. Each paper has its own companion repo following this same layout. The full corpus, with canonical references:
+
+| # | Title | Zenodo DOI | GitHub repo | Status |
+|---|---|---|---|---|
+| 0 | What Physics Permits | [10.5281/zenodo.18605692](https://doi.org/10.5281/zenodo.18605692) | [`APF-Paper-0-What-Physics-Permits`](https://github.com/Ethan-Brooke/APF-Paper-0-What-Physics-Permits) | public |
+| 1 | The Enforceability of Distinction | [10.5281/zenodo.18604678](https://doi.org/10.5281/zenodo.18604678) | [`APF-Paper-1-The-Enforceability-of-Distinction`](https://github.com/Ethan-Brooke/APF-Paper-1-The-Enforceability-of-Distinction) | public |
+| 2 | The Structure of Admissible Physics | [10.5281/zenodo.18604839](https://doi.org/10.5281/zenodo.18604839) | [`APF-Paper-2-The-Structure-of-Admissible-Physics`](https://github.com/Ethan-Brooke/APF-Paper-2-The-Structure-of-Admissible-Physics) | public |
+| 3 | Ledgers **(this repo)** | [10.5281/zenodo.18604844](https://doi.org/10.5281/zenodo.18604844) | [`APF-Paper-3-Ledgers-Entropy-Time-Cost`](https://github.com/Ethan-Brooke/APF-Paper-3-Ledgers-Entropy-Time-Cost) | public |
+| 4 | Admissibility Constraints and Structural Saturation | [10.5281/zenodo.18604845](https://doi.org/10.5281/zenodo.18604845) | [`APF-Paper-4-Admissibility-Constraints-Field-Content`](https://github.com/Ethan-Brooke/APF-Paper-4-Admissibility-Constraints-Field-Content) | public |
+| 5 | Quantum Structure from Finite Enforceability | [10.5281/zenodo.18604861](https://doi.org/10.5281/zenodo.18604861) | [`APF-Paper-5-Quantum-Structure-Hilbert-Born`](https://github.com/Ethan-Brooke/APF-Paper-5-Quantum-Structure-Hilbert-Born) | public |
+| 6 | Dynamics and Geometry as Optimal Admissible Reallocation | [10.5281/zenodo.18604874](https://doi.org/10.5281/zenodo.18604874) | [`APF-Paper-6-Dynamics-Geometry-Spacetime-Gravity`](https://github.com/Ethan-Brooke/APF-Paper-6-Dynamics-Geometry-Spacetime-Gravity) | public |
+| 7 | Action, Internalization, and the Lagrangian | [10.5281/zenodo.18604875](https://doi.org/10.5281/zenodo.18604875) | [`APF-Paper-7-Action-Internalization-Lagrangian`](https://github.com/Ethan-Brooke/APF-Paper-7-Action-Internalization-Lagrangian) | public |
+| 13 | The Minimal Admissibility Core | [10.5281/zenodo.18614663](https://doi.org/10.5281/zenodo.18614663) | [`APF-Paper-13-The-Minimal-Admissibility-Core`](https://github.com/Ethan-Brooke/APF-Paper-13-The-Minimal-Admissibility-Core) | public |
+| — | Canonical codebase (v6.9) | [10.5281/zenodo.18604548](https://doi.org/10.5281/zenodo.18604548) | [`APF-Codebase`](https://github.com/Ethan-Brooke/APF-Codebase) | pending |
+
+The canonical computational engine — the full bank of 342 theorems across 19 modules — is the **APF Codebase** ([Zenodo](https://doi.org/10.5281/zenodo.18604548)). Every per-paper repo is a faithful subset of that engine.
+
+---
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
 
 ---
 
-*Generated by the APF `create-repo` skill on 2026-04-18. Codebase snapshot: v6.8 (frozen 2026-04-18; 348 verify_all checks, 335 bank-registered theorems, 48 quantitative predictions).*
+*Generated by the APF `create-repo` skill on 2026-04-18. Codebase snapshot: v6.9 (frozen 2026-04-18; 355 verify_all checks, 342 bank-registered theorems, 48 quantitative predictions).*
