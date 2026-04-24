@@ -56,6 +56,19 @@ You are reading the companion to **Paper 3** (this repo: https://github.com/Etha
 
 ---
 
+## §1.5 — The Phase 21 audit-native bundle (Tier 1)
+
+As of 2026-04-24, this repo ships a dedicated bundle of AI-onboarding files designed specifically to prevent the failure modes listed in `AGENTS.md`. If you are a cold AI agent, read these four files **before** attempting to summarise, criticise, or extend this paper. Each has a single clear purpose.
+
+1. **`ai_context/ARGUMENT_FLOW.md`** — one-page structural spine. A → B → C → D → E. If you read only one file in `ai_context/`, read this one.
+2. **`ai_context/LOCAL_VS_IMPORTED.md`** — five-category partition of every structurally meaningful result into *locally proved / imported from earlier APF / standard mathematical / empirical comparison / not claimed*. Prevents the most common AI failure mode (presenting imported APF-spine results as locally derived).
+3. **`ai_context/CLAIMS_LEDGER.md`** — row-by-row attack surface: every load-bearing claim maps to proof location, code check, status tag, and the specific failure mode a skeptical reviewer would attack.
+4. **`ai_context/DO_NOT_CLAIM.md`** — anti-hallucination guards harvested from external reviews + internal audits. Consult before writing any summary, email, or reviewer response.
+
+These files are the Phase 21 (AI-Onboarding Audit) output from the canonical APF work plan. Paper 8 carries the pilot implementation with additional Phase 22 content (acc_SM provenance fix, anti-smuggling test suite, minimal working example, gorgeous-math Colab).
+
+---
+
 ## §2 — Operational loading (Tier 2): the seven steps
 
 ### Step 1 — Verify the code runs (30 seconds)

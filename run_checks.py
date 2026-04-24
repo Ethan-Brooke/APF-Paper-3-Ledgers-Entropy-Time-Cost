@@ -7,8 +7,8 @@ Usage:
     python run_checks.py --check T_Born  # run a single theorem by name
 
 This is the standalone-repo verifier for Ledgers Entropy Time Cost (APF Paper 3).
-The full APF codebase v6.8 (frozen 2026-04-18) verifies 348 checks across
-335 bank-registered theorems plus apf/standalone/ — this paper's repo
+The full APF codebase v6.9 (2026-04-23) verifies 437 checks across
+420 bank-registered theorems + apf/standalone/ across 34 registered modules — this paper's repo
 verifies the 13-theorem subset directly cited by the manuscript.
 """
 
