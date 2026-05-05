@@ -57,7 +57,7 @@ sources: []
 
 **Source:** `Papers/Paper 23 - What Physics Permits/Paper_0_WPP_v3.0.tex` + `.pdf`.
 
-**Zenodo DOI (v2.0 deposit):** https://doi.org/10.5281/zenodo.18605692. A v3.0 deposit will follow once Ethan reviews the compiled PDF.
+**Zenodo DOI (v2.0 deposit):** https://doi.org/10.5281/zenodo.18439523. A v3.0 deposit will follow once Ethan reviews the compiled PDF.
 
 ## See also
 - [[Paper 1 - Spine]]

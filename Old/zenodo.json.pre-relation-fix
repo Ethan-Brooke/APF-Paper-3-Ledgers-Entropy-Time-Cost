@@ -11,7 +11,7 @@
   "upload_type": "software",
   "access_right": "open",
   "license": "MIT",
-  "keywords": ["entropy", "arrow of time", "CPTP", "horizon entropy", "Bekenstein-Hawking", "ledger"],
+  "keywords": ["entropy", "arrow of time", "CPTP maps", "horizon entropy", "Bekenstein-Hawking", "cosmogenesis", "Fisher information", "ledger accounting", "admissibility carrying capacity"],
   "related_identifiers": [
     {
       "identifier": "https://github.com/Ethan-Brooke/APF-Paper-3-Ledgers-Entropy-Time-Cost",
@@ -19,15 +19,15 @@
       "scheme": "url"
     },
     {
-      "identifier": "10.5281/zenodo.18439363",
-      "relation": "isSupplementTo",
+      "identifier": "10.5281/zenodo.18604844",
+      "relation": "isVersionOf",
       "scheme": "doi"
     },
     {
-      "identifier": "10.5281/zenodo.18529115",
+      "identifier": "10.5281/zenodo.18604548",
       "relation": "references",
       "scheme": "doi"
     }
   ],
-  "version": "3.6"
+  "version": "3.2"
 }
